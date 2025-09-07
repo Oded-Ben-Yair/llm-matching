@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "dotenv": "^17.2.2",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "mongodb": "^6.19.0",
+    "pg": "^8.16.3"
   }
 }
