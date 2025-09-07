@@ -1,2 +1,4 @@
 node_modules/
 .env
+*:Zone.Identifier
+server.log

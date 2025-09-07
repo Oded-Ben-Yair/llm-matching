@@ -30,18 +30,16 @@ export async function llmMatch(query, allNurses){
     model: AZURE_OPENAI_DEPLOYMENT,
     input: [
       { role: 'system', content: [
-        { type: 'text', text: 'You are a healthcare staffing matching engine for WonderCare. Rank candidates for a patient request using ALL provided data: skills, expertise tags, location proximity, availability overlap, rating, reviews, and urgency. Be decisive and avoid ties unless justified.' }
+        { type: 'input_text', text: 'You are a healthcare staffing matching engine for WonderCare. Rank candidates for a patient request using ALL provided data: skills, expertise tags, location proximity, availability overlap, rating, reviews, and urgency. Be decisive and avoid ties unless justified.' }
       ]},
       { role: 'user', content: [
-        { type: 'text', text: 'Request + Candidates (JSON):' },
-        { type: 'input_text', text: JSON.stringify(payload) },
-        { type: 'text', text: 'Return topK (default 5) as JSON only. Include a compact rationale per candidate.' }
+        { type: 'input_text', text: `Request + Candidates (JSON):\n${JSON.stringify(payload)}\n\nReturn topK (default 5) as JSON only. Include a compact rationale per candidate.` }
       ]}
     ],
-    response_format: {
-      type: 'json_schema',
-      json_schema: {
+    text: {
+      format: {
         name: 'MatchResult',
+        type: 'json_schema',
         schema: {
           type: 'object',
           properties: {
@@ -54,7 +52,8 @@ export async function llmMatch(query, allNurses){
                   id: { type: 'string' },
                   score: { type: 'number', minimum: 0, maximum: 1 },
                   reason: { type: 'string' }
-                }
+                },
+                additionalProperties: false
               }
             }
           },
@@ -78,10 +77,36 @@ export async function llmMatch(query, allNurses){
     throw new Error('Azure OpenAI HTTP '+resp.status+': '+txt);
   }
   const data = await resp.json();
-  // Responses API returns content in output[0].content[0].text or similar (stable JSON per spec).
-  const text = data?.output_text || data?.output?.[0]?.content?.[0]?.text || data?.content?.[0]?.text || JSON.stringify(data);
+  
+  // Find the message output with the text content
+  let text = null;
+  if (data?.output && Array.isArray(data.output)) {
+    for (const item of data.output) {
+      if (item.type === 'message' && item.content?.[0]) {
+        const content = item.content[0];
+        if (content.type === 'output_text' && content.text) {
+          text = content.text;
+          break;
+        } else if (content.text) {
+          text = content.text;
+          break;
+        }
+      }
+    }
+  }
+  
+  // Fallback to other possible locations
+  if (!text) {
+    text = data?.output_text || data?.text || JSON.stringify(data);
+  }
+  
   let parsed;
-  try { parsed = JSON.parse(text); } catch { throw new Error('LLM did not return valid JSON: '+text); }
+  try { 
+    parsed = typeof text === 'string' ? JSON.parse(text) : text;
+  } catch(e) { 
+    console.error('Failed to parse JSON:', text);
+    throw new Error('LLM did not return valid JSON: '+text); 
+  }
   const results = (parsed.results || []).sort((a,b)=> (b.score??0)-(a.score??0));
   // Attach names for convenience
   const byId = Object.fromEntries(allNurses.map(n=>[n.id,n]));

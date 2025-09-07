@@ -1,6 +1,13 @@
+import 'dotenv/config';
 import express from 'express';
-import nurses from '../sample_data/nurses.json' assert { type: 'json' };
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { llmMatch } from './lib/llm.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const nurses = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'sample_data', 'nurses.json'), 'utf-8'));
 
 const app = express();
 app.use(express.json());
@@ -20,4 +27,12 @@ app.post('/match', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log('LLM Matching listening on :' + PORT));
+app.listen(PORT, () => {
+  console.log('LLM Matching listening on :' + PORT);
+  if (process.env.AZURE_OPENAI_URI) {
+    const url = new URL(process.env.AZURE_OPENAI_URI);
+    console.log(`Azure OpenAI configured: ${url.protocol}//${url.hostname}/...`);
+  } else {
+    console.log('Warning: AZURE_OPENAI_URI not configured');
+  }
+});
