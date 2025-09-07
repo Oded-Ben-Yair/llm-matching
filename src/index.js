@@ -13,6 +13,9 @@ const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 5003;
 
+// Serve static docs
+app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
+
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
 // Query shape is shared with other services; the LLM sees full candidate list + query
@@ -29,6 +32,7 @@ app.post('/match', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log('LLM Matching listening on :' + PORT);
+  console.log(`Docs at http://localhost:${PORT}/docs/demo.html`);
   if (process.env.AZURE_OPENAI_URI) {
     const url = new URL(process.env.AZURE_OPENAI_URI);
     console.log(`Azure OpenAI configured: ${url.protocol}//${url.hostname}/...`);

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WonderCare LLM Matching Demo - Azure OpenAI Responses API</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    .header p {
+      opacity: 0.95;
+      font-size: 1.1em;
+    }
+    .status-bar {
+      background: #f8f9fa;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e9ecef;
+    }
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .status-dot.online { background: #28a745; }
+    .status-dot.offline { background: #dc3545; animation: none; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .main-content {
+      padding: 30px;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .section h2 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.8em;
+      border-bottom: 3px solid #5e72e4;
+      padding-bottom: 10px;
+    }
+    .info-card {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+    .info-card h3 {
+      margin-bottom: 10px;
+    }
+    .info-card p {
+      line-height: 1.6;
+    }
+    .preset-selector {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .preset-card {
+      flex: 1;
+      padding: 20px;
+      border: 3px solid #e9ecef;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: white;
+    }
+    .preset-card:hover {
+      border-color: #5e72e4;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(94, 114, 228, 0.2);
+    }
+    .preset-card.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #5e72e4;
+    }
+    .preset-card h4 {
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+    .preset-card .details {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+      color: white;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(94, 114, 228, 0.4);
+    }
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .timing-info {
+      background: #e7f3ff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .timing-info.show {
+      display: block;
+    }
+    .timing-info span {
+      font-weight: 600;
+      color: #0066cc;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .results-table th {
+      background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .results-table td {
+      padding: 15px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .results-table tr:hover {
+      background: #f8f9fa;
+    }
+    .score-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      color: white;
+    }
+    .score-high { background: #28a745; }
+    .score-medium { background: #ffc107; }
+    .score-low { background: #dc3545; }
+    .reason-quality {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+    .quality-checks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .quality-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: white;
+      border-radius: 8px;
+    }
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .check-icon.pass {
+      background: #28a745;
+      color: white;
+    }
+    .check-icon.fail {
+      background: #e9ecef;
+      color: #6c757d;
+    }
+    .json-viewer {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 10px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.9em;
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .json-viewer pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .error-banner {
+      background: #dc3545;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .error-banner.show {
+      display: block;
+    }
+    .payload-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .payload-modal.show {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏥 WonderCare LLM Matching Demo</h1>
+      <p>Azure OpenAI Responses API - Intelligent Nurse Ranking with Structured Output</p>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-indicator">
+        <span class="status-dot offline" id="statusDot"></span>
+        <span id="statusText">Checking...</span>
+      </div>
+      <div>
+        <span id="azureStatus"></span>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="error-banner" id="errorBanner">
+        ⚠️ Azure environment variables not configured. Demo running in limited mode.
+      </div>
+
+      <div class="section">
+        <h2>How It Works</h2>
+        <div class="info-card">
+          <h3>🧠 LLM-Powered Ranking</h3>
+          <p>
+            This service sends the complete request and all nurse candidates to Azure OpenAI's Responses API.
+            Using a strict JSON schema, the LLM evaluates ALL factors simultaneously:
+            services match, expertise alignment, geographic proximity, availability overlap,
+            ratings/reviews, and urgency. The output is enforced to return structured JSON with
+            id, score (0-1), and detailed reasoning for each ranking decision.
+          </p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Select Preset</h2>
+        <div class="preset-selector">
+          <div class="preset-card active" id="preset1" onclick="selectPreset(1)">
+            <h4>🚨 Urgent Request</h4>
+            <div class="details">
+              Tel Aviv • Wound Care<br>
+              Geriatrics/Pediatrics<br>
+              Monday 12:00-15:00 IST<br>
+              <strong>urgent: true</strong>
+            </div>
+          </div>
+          <div class="preset-card" id="preset2" onclick="selectPreset(2)">
+            <h4>📅 Routine Request</h4>
+            <div class="details">
+              Tel Aviv • Wound Care<br>
+              Geriatrics/Pediatrics<br>
+              Monday 12:00-15:00 IST<br>
+              <strong>urgent: false</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="controls">
+          <button class="btn btn-primary" onclick="runLLM()" id="runBtn">
+            <span>🚀</span> Run LLM Matching
+          </button>
+          <button class="btn btn-secondary" onclick="showPayload()">
+            <span>📋</span> Show Prompt Payload
+          </button>
+        </div>
+
+        <div class="timing-info" id="timingInfo">
+          ⏱️ Time to First Byte: <span id="ttfb">--</span>ms | 
+          Total Time: <span id="totalTime">--</span>ms
+        </div>
+      </div>
+
+      <div class="section" id="resultsSection" style="display: none;">
+        <h2>Results</h2>
+        <table class="results-table" id="resultsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Score</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+
+        <div class="reason-quality">
+          <h3>📊 Reason Quality Analysis</h3>
+          <div class="quality-checks" id="qualityChecks"></div>
+        </div>
+
+        <h3 style="margin-top: 30px;">Raw JSON Response</h3>
+        <div class="json-viewer">
+          <pre id="jsonOutput"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="payload-modal" id="payloadModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closePayload()">×</button>
+      <h2>Prompt Payload Structure</h2>
+      <p style="margin: 15px 0;">This is the compact payload sent to Azure OpenAI:</p>
+      <div class="json-viewer">
+        <pre id="payloadJson"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPreset = 1;
+    const presets = {
+      1: {
+        city: "Tel Aviv",
+        servicesQuery: ["Wound Care"],
+        expertiseQuery: ["Geriatrics", "Pediatrics"],
+        start: "2025-07-28T09:00:00Z",
+        end: "2025-07-28T12:00:00Z",
+        lat: 32.0853,
+        lng: 34.7818,
+        urgent: true
+      },
+      2: {
+        city: "Tel Aviv",
+        servicesQuery: ["Wound Care"],
+        expertiseQuery: ["Geriatrics", "Pediatrics"],
+        start: "2025-07-28T09:00:00Z",
+        end: "2025-07-28T12:00:00Z",
+        lat: 32.0853,
+        lng: 34.7818,
+        urgent: false
+      }
+    };
+
+    async function checkHealth() {
+      try {
+        const response = await fetch('/health');
+        const data = await response.json();
+        if (data.ok) {
+          document.getElementById('statusDot').className = 'status-dot online';
+          document.getElementById('statusText').textContent = 'API Online';
+          
+          // Check if Azure is configured
+          const testResponse = await fetch('/match', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ city: "test" })
+          });
+          const testData = await testResponse.json();
+          if (testData.error && testData.detail && testData.detail.includes('AZURE_OPENAI')) {
+            document.getElementById('errorBanner').classList.add('show');
+            document.getElementById('azureStatus').textContent = '⚠️ Azure Not Configured';
+          } else {
+            document.getElementById('azureStatus').textContent = '✅ Azure Ready';
+          }
+        }
+      } catch (e) {
+        document.getElementById('statusDot').className = 'status-dot offline';
+        document.getElementById('statusText').textContent = 'API Offline';
+      }
+    }
+
+    function selectPreset(num) {
+      currentPreset = num;
+      document.querySelectorAll('.preset-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      document.getElementById(`preset${num}`).classList.add('active');
+    }
+
+    async function runLLM() {
+      const btn = document.getElementById('runBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Running...';
+      
+      document.getElementById('resultsSection').style.display = 'none';
+      document.getElementById('timingInfo').classList.remove('show');
+      
+      const startTime = performance.now();
+      let ttfb = 0;
+      
+      try {
+        const response = await fetch('/match', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(presets[currentPreset])
+        });
+        
+        ttfb = performance.now() - startTime;
+        const data = await response.json();
+        const totalTime = performance.now() - startTime;
+        
+        // Show timing
+        document.getElementById('ttfb').textContent = Math.round(ttfb);
+        document.getElementById('totalTime').textContent = Math.round(totalTime);
+        document.getElementById('timingInfo').classList.add('show');
+        
+        // Display results
+        displayResults(data);
+        
+      } catch (e) {
+        alert('Error running LLM: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🚀</span> Run LLM Matching';
+      }
+    }
+
+    function displayResults(data) {
+      document.getElementById('resultsSection').style.display = 'block';
+      
+      // Clear previous results
+      const tbody = document.getElementById('resultsBody');
+      tbody.innerHTML = '';
+      
+      // Populate table
+      if (data.results && data.results.length > 0) {
+        data.results.forEach(result => {
+          const row = tbody.insertRow();
+          row.innerHTML = `
+            <td><strong>${result.id}</strong></td>
+            <td>${result.name}</td>
+            <td><span class="score-badge ${getScoreClass(result.score)}">${result.score.toFixed(2)}</span></td>
+            <td>${result.reason}</td>
+          `;
+        });
+        
+        // Check reason quality
+        checkReasonQuality(data.results);
+      }
+      
+      // Show raw JSON
+      document.getElementById('jsonOutput').textContent = JSON.stringify(data, null, 2);
+    }
+
+    function getScoreClass(score) {
+      if (score >= 0.7) return 'score-high';
+      if (score >= 0.4) return 'score-medium';
+      return 'score-low';
+    }
+
+    function checkReasonQuality(results) {
+      const checks = [
+        { name: 'Service mentioned', keywords: ['Wound', 'wound', 'service', 'Service'] },
+        { name: 'Expertise mentioned', keywords: ['expertise', 'Pediatric', 'Geriatric', 'specialist'] },
+        { name: 'Distance/Location', keywords: ['distance', 'km', 'location', 'near', 'close', 'away'] },
+        { name: 'Availability', keywords: ['available', 'availability', 'window', 'slot', 'time'] },
+        { name: 'Rating/Reviews', keywords: ['rating', 'review', 'trust', 'reputation'] },
+        { name: 'Urgency considered', keywords: ['urgent', 'priority', 'immediate'] }
+      ];
+      
+      const container = document.getElementById('qualityChecks');
+      container.innerHTML = '';
+      
+      const allReasons = results.map(r => r.reason).join(' ');
+      
+      checks.forEach(check => {
+        const found = check.keywords.some(keyword => allReasons.includes(keyword));
+        const div = document.createElement('div');
+        div.className = 'quality-check';
+        div.innerHTML = `
+          <span class="check-icon ${found ? 'pass' : 'fail'}">${found ? '✓' : '○'}</span>
+          <span>${check.name}</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function showPayload() {
+      const payload = {
+        q: {
+          city: presets[currentPreset].city,
+          servicesQuery: presets[currentPreset].servicesQuery,
+          expertiseQuery: presets[currentPreset].expertiseQuery,
+          start: presets[currentPreset].start,
+          end: presets[currentPreset].end,
+          lat: presets[currentPreset].lat,
+          lng: presets[currentPreset].lng,
+          urgent: presets[currentPreset].urgent
+        },
+        c: "(All nurse candidates - sent server-side)"
+      };
+      
+      document.getElementById('payloadJson').textContent = JSON.stringify(payload, null, 2);
+      document.getElementById('payloadModal').classList.add('show');
+    }
+
+    function closePayload() {
+      document.getElementById('payloadModal').classList.remove('show');
+    }
+
+    // Check health on load
+    window.addEventListener('load', () => {
+      checkHealth();
+      setInterval(checkHealth, 30000); // Check every 30 seconds
+    });
+  </script>
+</body>
+</html>
