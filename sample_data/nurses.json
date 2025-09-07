@@ -1,0 +1,172 @@
+[
+  {
+    "id": "n1",
+    "name": "Nurit Ben-Ami",
+    "city": "Tel Aviv",
+    "lat": 32.0853,
+    "lng": 34.7818,
+    "services": [
+      "Wound Care",
+      "Geriatric Care"
+    ],
+    "expertiseTags": [
+      "Pediatrics",
+      "Home Care"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 124,
+    "hourlyRate": 150,
+    "languages": [
+      "he",
+      "en"
+    ],
+    "availability": {
+      "mon": [
+        {
+          "start": "08:00",
+          "end": "16:00"
+        }
+      ],
+      "tue": [
+        {
+          "start": "08:00",
+          "end": "16:00"
+        }
+      ],
+      "wed": [
+        {
+          "start": "08:00",
+          "end": "16:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "n2",
+    "name": "Adi Cohen",
+    "city": "Tel Aviv",
+    "lat": 32.09,
+    "lng": 34.78,
+    "services": [
+      "Child Care",
+      "General Nursing"
+    ],
+    "expertiseTags": [
+      "Pediatrics"
+    ],
+    "rating": 4.6,
+    "reviewsCount": 88,
+    "hourlyRate": 130,
+    "languages": [
+      "he"
+    ],
+    "availability": {
+      "mon": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "tue": [
+        {
+          "start": "12:00",
+          "end": "20:00"
+        }
+      ],
+      "fri": [
+        {
+          "start": "08:00",
+          "end": "12:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "n3",
+    "name": "Yael Levi",
+    "city": "Ramat Gan",
+    "lat": 32.0823,
+    "lng": 34.81,
+    "services": [
+      "Wound Treatment",
+      "Elderly Care"
+    ],
+    "expertiseTags": [
+      "Wound Care"
+    ],
+    "rating": 4.9,
+    "reviewsCount": 46,
+    "hourlyRate": 160,
+    "languages": [
+      "he",
+      "en",
+      "ru"
+    ],
+    "availability": {
+      "mon": [
+        {
+          "start": "09:00",
+          "end": "17:00"
+        }
+      ],
+      "thu": [
+        {
+          "start": "09:00",
+          "end": "17:00"
+        }
+      ],
+      "sun": [
+        {
+          "start": "09:00",
+          "end": "12:00"
+        }
+      ]
+    }
+  },
+  {
+    "id": "n4",
+    "name": "Shira Katz",
+    "city": "Tel Aviv",
+    "lat": 32.099,
+    "lng": 34.776,
+    "services": [
+      "Geriatric Care",
+      "Post-Op Care"
+    ],
+    "expertiseTags": [
+      "Geriatrics",
+      "Rehab"
+    ],
+    "rating": 4.7,
+    "reviewsCount": 210,
+    "hourlyRate": 155,
+    "languages": [
+      "he",
+      "en"
+    ],
+    "availability": {
+      "mon": [
+        {
+          "start": "07:00",
+          "end": "11:00"
+        },
+        {
+          "start": "17:00",
+          "end": "21:00"
+        }
+      ],
+      "tue": [
+        {
+          "start": "07:00",
+          "end": "11:00"
+        }
+      ],
+      "wed": [
+        {
+          "start": "17:00",
+          "end": "21:00"
+        }
+      ]
+    }
+  }
+]
