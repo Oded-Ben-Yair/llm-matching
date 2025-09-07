@@ -1,0 +1,32 @@
+{
+  "info": {
+    "name": "WonderCare LLM Matching",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:5003/health"
+      }
+    },
+    {
+      "name": "Match (LLM)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "content-type",
+            "value": "application/json"
+          }
+        ],
+        "url": "http://localhost:5003/match",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"city\":\"Tel Aviv\",\"servicesQuery\":[\"Wound Care\"],\"expertiseQuery\":[\"Geriatrics\",\"Pediatrics\"],\"start\":\"2025-07-28T09:00:00Z\",\"end\":\"2025-07-28T12:00:00Z\",\"lat\":32.0853,\"lng\":34.7818,\"urgent\":true,\"topK\":5}"
+        }
+      }
+    }
+  ]
+}
