@@ -211,14 +211,14 @@
     </style>
 </head>
 <body>
-    <div class="mode-banner mode-mock">
-        🧪 MOCK MODE - Local Fallback
+    <div class="mode-banner mode-live">
+        🚀 LIVE MODE - Azure OpenAI API
         
     </div>
     
     <div class="header">
         <h1>LLM Matching CSV Test Report</h1>
-        <div class="timestamp">Generated: 9/8/2025, 11:55:44 AM</div>
+        <div class="timestamp">Generated: 9/8/2025, 1:13:23 PM</div>
     </div>
     
     <div class="summary-grid">
@@ -228,15 +228,15 @@
         </div>
         <div class="summary-card">
             <h3>Average Latency</h3>
-            <div class="value">59ms</div>
+            <div class="value">1932ms</div>
         </div>
         <div class="summary-card">
             <h3>Total Matches</h3>
-            <div class="value">60</div>
+            <div class="value">0</div>
         </div>
         <div class="summary-card">
             <h3>Mode</h3>
-            <div class="value">MOCK</div>
+            <div class="value">LIVE</div>
         </div>
     </div>
     
@@ -246,66 +246,13 @@
                 <div class="scenario-title">Scenario A: Tel Aviv wound care 30km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Tel Aviv</strong></span>
-                    <span class="latency">87ms</span>
-                    <span>Matches: <strong>5</strong></span>
+                    <span class="latency">1932ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -314,66 +261,13 @@
                 <div class="scenario-title">Scenario B: Jerusalem medication 40km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Jerusalem</strong></span>
-                    <span class="latency">70ms</span>
-                    <span>Matches: <strong>5</strong></span>
+                    <span class="latency">1578ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -382,66 +276,13 @@
                 <div class="scenario-title">Scenario C: Haifa pediatrics 50km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Haifa</strong></span>
-                    <span class="latency">77ms</span>
-                    <span>Matches: <strong>10</strong></span>
+                    <span class="latency">1752ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -450,66 +291,13 @@
                 <div class="scenario-title">Scenario D: Beer Sheva hospital 60km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Beer Sheva</strong></span>
-                    <span class="latency">52ms</span>
-                    <span>Matches: <strong>5</strong></span>
+                    <span class="latency">1915ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -518,50 +306,13 @@
                 <div class="scenario-title">Scenario E: Rishon home care 35km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Rishon LeTsiyon</strong></span>
-                    <span class="latency">49ms</span>
-                    <span>Matches: <strong>3</strong></span>
+                    <span class="latency">1773ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -570,66 +321,13 @@
                 <div class="scenario-title">Scenario F: Netanya day-night 45km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Netanya</strong></span>
-                    <span class="latency">51ms</span>
-                    <span>Matches: <strong>7</strong></span>
+                    <span class="latency">1996ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -638,66 +336,13 @@
                 <div class="scenario-title">Scenario G: Ashdod geriatric 55km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Ashdod</strong></span>
-                    <span class="latency">61ms</span>
-                    <span>Matches: <strong>5</strong></span>
+                    <span class="latency">1922ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -706,66 +351,13 @@
                 <div class="scenario-title">Scenario H: Herzliya emergency 30km urgent</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Herzliya</strong></span>
-                    <span class="latency">47ms</span>
-                    <span>Matches: <strong>5</strong></span>
+                    <span class="latency">2369ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -774,66 +366,13 @@
                 <div class="scenario-title">Scenario I: Ramat Gan IV therapy 40km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Ramat Gan</strong></span>
-                    <span class="latency">47ms</span>
-                    <span>Matches: <strong>10</strong></span>
+                    <span class="latency">2011ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     
@@ -842,66 +381,13 @@
                 <div class="scenario-title">Scenario J: Bat Yam general care 50km</div>
                 <div class="scenario-meta">
                     <span>City: <strong>Bat Yam</strong></span>
-                    <span class="latency">50ms</span>
-                    <span>Matches: <strong>5</strong></span>
+                    <span class="latency">2069ms</span>
+                    <span>Matches: <strong>0</strong></span>
                 </div>
             </div>
             
             
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                            <tr>
-                                <td>#1</td>
-                                <td>0127d89a-51e7-4867-b5c7-3502d7038c88</td>
-                                <td>Nurse 1</td>
-                                <td><span class="score">1.000</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#2</td>
-                                <td>012c767f-6856-40a2-9702-38b394dff355</td>
-                                <td>Nurse 2</td>
-                                <td><span class="score">0.850</span></td>
-                                <td class="reason">Mock match: General Care expertise, Holon location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#3</td>
-                                <td>01b52cbb-bee6-4b5d-9087-fd53c62b2a19</td>
-                                <td>Nurse 3</td>
-                                <td><span class="score">0.700</span></td>
-                                <td class="reason">Mock match: General Care expertise, Nethanya location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#4</td>
-                                <td>023f36e5-dce4-4c67-a860-b2f063ebe321</td>
-                                <td>Nurse 4</td>
-                                <td><span class="score">0.550</span></td>
-                                <td class="reason">Mock match: General Care expertise, Beer Yaakov location</td>
-                            </tr>
-                        
-                            <tr>
-                                <td>#5</td>
-                                <td>025cf8e8-b6a5-43e7-99a3-d8c769e58fc5</td>
-                                <td>Nurse 5</td>
-                                <td><span class="score">0.400</span></td>
-                                <td class="reason">Mock match: General Care expertise, Raanana location</td>
-                            </tr>
-                        
-                    </tbody>
-                </table>
+                <div class="no-results">Error: LLM error</div>
             
         </div>
     

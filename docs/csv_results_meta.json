@@ -1,76 +1,76 @@
 {
-  "mode": "MOCK",
-  "timestamp": "2025-09-08T11:55:44+00:00",
+  "mode": "LIVE",
+  "timestamp": "2025-09-08T13:13:23+00:00",
   "scenarios": [
     {
       "case": "A",
       "city": "Tel Aviv",
       "description": "Tel Aviv wound care 30km",
-      "latency_ms": 87,
-      "count": 5
+      "latency_ms": 1932,
+      "count": 0
     },
     {
       "case": "B",
       "city": "Jerusalem",
       "description": "Jerusalem medication 40km",
-      "latency_ms": 70,
-      "count": 5
+      "latency_ms": 1578,
+      "count": 0
     },
     {
       "case": "C",
       "city": "Haifa",
       "description": "Haifa pediatrics 50km",
-      "latency_ms": 77,
-      "count": 10
+      "latency_ms": 1752,
+      "count": 0
     },
     {
       "case": "D",
       "city": "Beer Sheva",
       "description": "Beer Sheva hospital 60km",
-      "latency_ms": 52,
-      "count": 5
+      "latency_ms": 1915,
+      "count": 0
     },
     {
       "case": "E",
       "city": "Rishon LeTsiyon",
       "description": "Rishon home care 35km",
-      "latency_ms": 49,
-      "count": 3
+      "latency_ms": 1773,
+      "count": 0
     },
     {
       "case": "F",
       "city": "Netanya",
       "description": "Netanya day-night 45km",
-      "latency_ms": 51,
-      "count": 7
+      "latency_ms": 1996,
+      "count": 0
     },
     {
       "case": "G",
       "city": "Ashdod",
       "description": "Ashdod geriatric 55km",
-      "latency_ms": 61,
-      "count": 5
+      "latency_ms": 1922,
+      "count": 0
     },
     {
       "case": "H",
       "city": "Herzliya",
       "description": "Herzliya emergency 30km urgent",
-      "latency_ms": 47,
-      "count": 5
+      "latency_ms": 2369,
+      "count": 0
     },
     {
       "case": "I",
       "city": "Ramat Gan",
       "description": "Ramat Gan IV therapy 40km",
-      "latency_ms": 47,
-      "count": 10
+      "latency_ms": 2011,
+      "count": 0
     },
     {
       "case": "J",
       "city": "Bat Yam",
       "description": "Bat Yam general care 50km",
-      "latency_ms": 50,
-      "count": 5
+      "latency_ms": 2069,
+      "count": 0
     }
   ]
 }

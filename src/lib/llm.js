@@ -1,8 +1,26 @@
-const { AZURE_OPENAI_URI, AZURE_OPENAI_KEY, AZURE_OPENAI_DEPLOYMENT } = process.env;
+import { azureRespond } from "../clients/azure.js";
 
-// Helper: Sleep for exponential backoff
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+const {
+  AZURE_OPENAI_URI,
+  AZURE_OPENAI_KEY,
+  AZURE_OPENAI_RESOURCE_HOST,
+  AZURE_OPENAI_DEPLOYMENT,
+  AZURE_OPENAI_API_VERSION
+} = process.env;
+
+function isLiveAzureEnabled() {
+  // Live if we have either a full URI+KEY, or host+deployment+version+key
+  const hasFull = AZURE_OPENAI_URI && AZURE_OPENAI_KEY;
+  const hasParts = AZURE_OPENAI_RESOURCE_HOST && AZURE_OPENAI_DEPLOYMENT && AZURE_OPENAI_API_VERSION && AZURE_OPENAI_KEY;
+  return Boolean(hasFull || hasParts);
+}
+
+function resolvedAzureUri() {
+  if (AZURE_OPENAI_URI) return AZURE_OPENAI_URI;
+  if (AZURE_OPENAI_RESOURCE_HOST && AZURE_OPENAI_DEPLOYMENT && AZURE_OPENAI_API_VERSION) {
+    return `${AZURE_OPENAI_RESOURCE_HOST}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=${AZURE_OPENAI_API_VERSION}`;
+  }
+  return null;
 }
 
 // Helper: Mask sensitive data for logging
@@ -10,38 +28,6 @@ function maskSensitive(str) {
   if (!str) return '';
   if (str.length > 500) return str.substring(0, 500) + '...[truncated]';
   return str;
-}
-
-// Helper: Retry wrapper for Azure API calls
-async function retryFetch(url, options, maxRetries = 2) {
-  let lastError;
-  const delays = [250, 500]; // Exponential backoff in ms
-  
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const resp = await fetch(url, options);
-      
-      // If it's a transient error (429, 5xx), retry
-      if (!resp.ok && attempt < maxRetries) {
-        const status = resp.status;
-        if (status === 429 || (status >= 500 && status < 600)) {
-          console.log(`Transient error ${status}, retrying in ${delays[attempt]}ms...`);
-          await sleep(delays[attempt]);
-          continue;
-        }
-      }
-      
-      return resp;
-    } catch (error) {
-      lastError = error;
-      if (attempt < maxRetries) {
-        console.log(`Network error, retrying in ${delays[attempt]}ms...`);
-        await sleep(delays[attempt]);
-      }
-    }
-  }
-  
-  throw lastError || new Error('Max retries exceeded');
 }
 
 function buildPrompt(query, candidates){
@@ -77,110 +63,65 @@ function getMockResponse(allNurses, topK = 5) {
 
 export async function llmMatch(query, allNurses){
   // Check for Azure credentials
-  if(!AZURE_OPENAI_URI || !AZURE_OPENAI_KEY || !AZURE_OPENAI_DEPLOYMENT){
+  if (!isLiveAzureEnabled()) {
     console.log('Azure credentials not configured. Using mock mode for local development.');
     console.log('Set AZURE_OPENAI_URI, AZURE_OPENAI_KEY, and AZURE_OPENAI_DEPLOYMENT for live matching.');
     return getMockResponse(allNurses, query.topK || 5);
   }
   
-  // Log masked URI for debugging
-  const uriHost = new URL(AZURE_OPENAI_URI).hostname;
-  console.log(`Calling Azure OpenAI at ${uriHost} (deployment: ${AZURE_OPENAI_DEPLOYMENT})`);
+  // Limit candidates to reduce token usage for Azure API
+  const maxCandidates = Math.min(50, allNurses.length);
+  const limitedNurses = allNurses.slice(0, maxCandidates);
   
-  const payload = buildPrompt(query, allNurses);
+  const uri = resolvedAzureUri();
+  const uriHost = new URL(uri).hostname;
+  console.log(`Calling Azure OpenAI at ${uriHost} (deployment: ${AZURE_OPENAI_DEPLOYMENT || 'auto'})`);
+  
+  const payload = buildPrompt(query, limitedNurses);
+  console.log(`Processing ${limitedNurses.length} candidates (limited from ${allNurses.length})`);
 
-  // Ask the model to rank and explain. Use JSON schema to force a strict shape.
-  const body = {
-    model: AZURE_OPENAI_DEPLOYMENT,
-    input: [
-      { role: 'system', content: [
-        { type: 'input_text', text: 'You are a healthcare staffing matching engine for WonderCare. Rank candidates for a patient request using ALL provided data: skills, expertise tags, location proximity, availability overlap, rating, reviews, and urgency. Be decisive and avoid ties unless justified.' }
-      ]},
-      { role: 'user', content: [
-        { type: 'input_text', text: `Request + Candidates (JSON):\n${JSON.stringify(payload)}\n\nReturn topK (default 5) as JSON only. Include a compact rationale per candidate.` }
-      ]}
-    ],
-    text: {
-      format: {
-        name: 'MatchResult',
-        type: 'json_schema',
-        schema: {
-          type: 'object',
-          properties: {
-            results: {
-              type: 'array',
-              items: {
-                type: 'object',
-                required: ['id','score','reason'],
-                properties: {
-                  id: { type: 'string' },
-                  score: { type: 'number', minimum: 0, maximum: 1 },
-                  reason: { type: 'string' }
-                },
-                additionalProperties: false
-              }
-            }
-          },
-          required: ['results'],
-          additionalProperties: false
-        }
-      }
+  // Build messages for Azure Chat Completions API
+  const messages = [
+    { 
+      role: 'system', 
+      content: 'You are a healthcare staffing matching engine for WonderCare. Rank candidates for a patient request using ALL provided data: skills, expertise tags, location proximity, availability overlap, rating, reviews, and urgency. Be decisive and avoid ties unless justified. Always respond with valid JSON in this format: {"results": [{"id": "string", "score": 0.95, "reason": "explanation"}]}' 
+    },
+    { 
+      role: 'user', 
+      content: `Request + Candidates (JSON):\n${JSON.stringify(payload)}\n\nReturn topK (default 5) as JSON only. Include a compact rationale per candidate.` 
     }
-  };
+  ];
 
   // Log truncated request for debugging
-  console.log('Request payload:', maskSensitive(JSON.stringify(body)));
+  console.log('Request payload:', maskSensitive(JSON.stringify(messages)));
   
-  // Make API call with retry logic
-  const resp = await retryFetch(AZURE_OPENAI_URI, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'api-key': AZURE_OPENAI_KEY
-    },
-    body: JSON.stringify(body)
+  // Make API call with new robust client
+  const result = await azureRespond({
+    uri,
+    apiKey: AZURE_OPENAI_KEY,
+    messages,
+    temperature: 0.2,
+    top_p: 0.9,
+    max_tokens: 192
   });
   
-  if(!resp.ok){
-    const txt = await resp.text();
-    console.error(`Azure OpenAI error ${resp.status}:`, maskSensitive(txt));
-    throw new Error(`Azure OpenAI HTTP ${resp.status}: ${maskSensitive(txt)}`);
+  if (!result.ok) {
+    console.error(`Azure OpenAI error:`, result.error);
+    throw new Error(`Azure OpenAI error: ${result.error}`);
   }
   
-  const data = await resp.json();
-  console.log('Response received:', maskSensitive(JSON.stringify(data)));
-  
-  // Find the message output with the text content
-  let text = null;
-  if (data?.output && Array.isArray(data.output)) {
-    for (const item of data.output) {
-      if (item.type === 'message' && item.content?.[0]) {
-        const content = item.content[0];
-        if (content.type === 'output_text' && content.text) {
-          text = content.text;
-          break;
-        } else if (content.text) {
-          text = content.text;
-          break;
-        }
-      }
-    }
-  }
-  
-  // Fallback to other possible locations
-  if (!text) {
-    text = data?.output_text || data?.text || JSON.stringify(data);
-  }
+  console.log('Response received:', maskSensitive(result.text));
   
   let parsed;
   try { 
-    parsed = typeof text === 'string' ? JSON.parse(text) : text;
+    parsed = typeof result.text === 'string' ? JSON.parse(result.text) : result.text;
   } catch(e) { 
-    console.error('Failed to parse JSON:', maskSensitive(text));
-    throw new Error('LLM did not return valid JSON: ' + maskSensitive(text)); 
+    console.error('Failed to parse JSON:', maskSensitive(result.text));
+    throw new Error('LLM did not return valid JSON: ' + maskSensitive(result.text)); 
   }
+  
   const results = (parsed.results || []).sort((a,b)=> (b.score??0)-(a.score??0));
-  // Attach names for convenience
+  // Attach names for convenience (use full list for name lookup)
   const byId = Object.fromEntries(allNurses.map(n=>[n.id,n]));
   return results.map(r => ({
     id: r.id,

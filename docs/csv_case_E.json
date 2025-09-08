@@ -1,1 +1,1 @@
-{"count":3,"results":[{"id":"0127d89a-51e7-4867-b5c7-3502d7038c88","name":"Nurse 1","score":1,"reason":"Mock match: General Care expertise, Nethanya location"},{"id":"012c767f-6856-40a2-9702-38b394dff355","name":"Nurse 2","score":0.85,"reason":"Mock match: General Care expertise, Holon location"},{"id":"01b52cbb-bee6-4b5d-9087-fd53c62b2a19","name":"Nurse 3","score":0.7,"reason":"Mock match: General Care expertise, Nethanya location"}]}
+{"error":"LLM error","detail":"Azure OpenAI error: Azure request failed: Request failed with status code 400"}

@@ -4,16 +4,30 @@ echo "=== LLM CSV Deep Smoke Tests ==="
 echo ""
 
 # Detect mode by sourcing .env if exists
-if [ -f .env ]; then
-    export $(cat .env | grep -v '^#' | xargs) 2>/dev/null
+[ -f .env ] && set -a && . ./.env && set +a
+
+MODE="MOCK"
+if { [ -n "$AZURE_OPENAI_KEY" ] && [ -n "$AZURE_OPENAI_URI" ]; } || \
+   { [ -n "$AZURE_OPENAI_KEY" ] && [ -n "$AZURE_OPENAI_RESOURCE_HOST" ] && [ -n "$AZURE_OPENAI_DEPLOYMENT" ] && [ -n "$AZURE_OPENAI_API_VERSION" ]; }; then
+  MODE="LIVE"
 fi
 
-if [ -n "$AZURE_OPENAI_URI" ] && [ -n "$AZURE_OPENAI_KEY" ] && [ -n "$AZURE_OPENAI_DEPLOYMENT" ]; then
-    MODE="LIVE"
-    echo "MODE: LIVE (Azure OpenAI)"
-else
-    MODE="MOCK"
-    echo "MODE: MOCK (Fallback)"
+echo "MODE: $MODE"
+
+# If LIVE, do a fail-fast ping: one small /match call and time it. Abort if >20s.
+if [ "$MODE" = "LIVE" ]; then
+  echo "Live sanity check..."
+  START_TS=$(date +%s)
+  RESP=$(curl -sS -X POST "http://localhost:5003/match" \
+    -H "Content-Type: application/json" \
+    --data '{"city":"Tel Aviv","servicesQuery":["General Care"],"topK":1}' \
+    --max-time 25 || true)
+  END_TS=$(date +%s)
+  ELAPSED=$((END_TS-START_TS))
+  if [ $ELAPSED -gt 20 ] || [ -z "$RESP" ]; then
+    echo "LIVE too slow or empty response (elapsed=${ELAPSED}s). Failing fast."
+    exit 2
+  fi
 fi
 echo ""
 
