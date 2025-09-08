@@ -4,3 +4,4 @@ node_modules/
 server.log
 nohup.out
 /tmp/*.log
+.env.backup.*

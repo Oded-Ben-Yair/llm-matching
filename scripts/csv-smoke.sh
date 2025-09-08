@@ -115,46 +115,55 @@ echo "----------------------------"
 run_scenario "A" "Tel Aviv" '["Wound Care"]' '["Post-Surgery Care"]' \
     "2024-01-15T08:00:00Z" "2024-01-15T20:00:00Z" true 5 \
     "Tel Aviv wound care 30km"
+sleep 4
 
 # B: Jerusalem, Medication Administration, 40km
 run_scenario "B" "Jerusalem" '["Medication Administration"]' '["Pharmacy Services"]' \
     "2024-02-01T09:00:00Z" "2024-02-01T17:00:00Z" false 5 \
     "Jerusalem medication 40km"
+sleep 4
 
 # C: Haifa, Pediatrics, 50km
 run_scenario "C" "Haifa" '["Pediatric Care"]' '["Child Care"]' \
     "null" "null" false 10 \
     "Haifa pediatrics 50km"
+sleep 4
 
 # D: Beer Sheva, Hospital Care, 60km
 run_scenario "D" "Beer Sheva" '["Hospital Care"]' '["Inpatient Services"]' \
     "2024-03-10T06:00:00Z" "2024-03-10T22:00:00Z" false 5 \
     "Beer Sheva hospital 60km"
+sleep 4
 
 # E: Rishon LeTsiyon, Home Care, 35km
 run_scenario "E" "Rishon LeTsiyon" '["Home Care"]' '["Mobile Patient Care"]' \
     "null" "null" false 3 \
     "Rishon home care 35km"
+sleep 4
 
 # F: Netanya, Day Night nursing, 45km
 run_scenario "F" "Netanya" '["Day Night","Post-Surgery Care"]' '[]' \
     "2024-04-01T08:00:00Z" "2024-04-30T18:00:00Z" false 7 \
     "Netanya day-night 45km"
+sleep 4
 
 # G: Ashdod, Geriatric Care, 55km
 run_scenario "G" "Ashdod" '["Geriatric Care"]' '["Elder Care"]' \
     "null" "null" false 5 \
     "Ashdod geriatric 55km"
+sleep 4
 
 # H: Herzliya, Emergency Care, 30km, urgent
 run_scenario "H" "Herzliya" '["Emergency Care"]' '["Critical Care"]' \
     "2024-05-15T10:00:00Z" "2024-05-15T14:00:00Z" true 5 \
     "Herzliya emergency 30km urgent"
+sleep 4
 
 # I: Ramat Gan, IV Therapy, 40km
 run_scenario "I" "Ramat Gan" '["IV Therapy","Catheter Care"]' '[]' \
     "null" "null" false 10 \
     "Ramat Gan IV therapy 40km"
+sleep 4
 
 # J: Bat Yam, General Care, 50km
 run_scenario "J" "Bat Yam" '["General Care"]' '["Home Care"]' \

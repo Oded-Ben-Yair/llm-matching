@@ -58,12 +58,11 @@ export async function azureRespond({ uri, apiKey, messages, temperature = 0.2, t
     messages,
     temperature,
     top_p,
-    max_tokens,
-    response_format: { type: "json_object" }
+    max_tokens
   };
 
   let attempt = 0;
-  const maxAttempts = 3; // initial + 2 retries
+  const maxAttempts = 5; // initial + 4 retries
   let lastErr;
 
   while (attempt < maxAttempts) {
@@ -94,8 +93,9 @@ export async function azureRespond({ uri, apiKey, messages, temperature = 0.2, t
       }
 
       // Non-retryable 4xx (except 429)
-      console.error(`Azure 4xx error details:`, res.status, res.data);
-      return { ok: false, error: `Azure non-retryable ${res.status}: ${JSON.stringify(res.data)}`, status: res.status };
+      console.error(`Azure 4xx error details:`, res.status, JSON.stringify(res.data));
+      const errorMsg = res.data?.error?.message || JSON.stringify(res.data);
+      return { ok: false, error: `Azure non-retryable ${res.status}: ${errorMsg}`, status: res.status };
     } catch (err) {
       lastErr = err;
       attempt++;

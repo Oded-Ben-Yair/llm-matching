@@ -70,7 +70,7 @@ export async function llmMatch(query, allNurses){
   }
   
   // Limit candidates to reduce token usage for Azure API
-  const maxCandidates = Math.min(50, allNurses.length);
+  const maxCandidates = Math.min(10, allNurses.length);
   const limitedNurses = allNurses.slice(0, maxCandidates);
   
   const uri = resolvedAzureUri();

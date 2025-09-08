@@ -1,1 +1,1 @@
-{"error":"LLM error","detail":"Azure OpenAI error: Azure request failed: Request failed with status code 400"}
+{"error":"LLM error","detail":"Azure OpenAI error: Azure request failed: Request failed with status code 404"}
