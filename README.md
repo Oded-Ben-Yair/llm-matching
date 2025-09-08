@@ -2,27 +2,41 @@
 
 LLM-based healthcare staffing matching service that uses Azure OpenAI to intelligently rank nurse candidates for patient requests.
 
-## Features
-
-- **Intelligent Matching**: Uses Azure OpenAI to analyze and rank candidates based on multiple factors
-- **Database Support**: Postgres primary, MongoDB optional, with JSON fallback
-- **RESTful API**: Simple HTTP endpoints for health checks and matching requests
-- **Flexible Scoring**: Considers skills, expertise, location, availability, ratings, and urgency
-
 ## Quick Start
 
 ```bash
 # Install dependencies
 npm install
 
-# Configure environment (copy and edit .env.example)
-cp .env.example .env
+# Start the development server
+npm run dev
 
-# Run the server
-npm start
+# Open the demo interface
+open http://localhost:5003/docs/demo.html
 ```
 
-Server runs on port 5003 by default (configurable via `PORT` environment variable).
+The service runs in **mock mode** by default when Azure credentials are not configured, allowing local development and testing without Azure OpenAI.
+
+## Features
+
+- **Intelligent Matching**: Uses Azure OpenAI to analyze and rank candidates based on multiple factors
+- **Mock Mode**: Runs locally without Azure credentials for development
+- **Resilient API Calls**: Automatic retries with exponential backoff for transient errors
+- **Database Support**: Postgres primary, MongoDB optional, with JSON fallback
+- **RESTful API**: Simple HTTP endpoints for health checks and matching requests
+- **Flexible Scoring**: Considers skills, expertise, location, availability, ratings, and urgency
+
+## Testing
+
+```bash
+# Run smoke tests (works without Azure)
+npm run test:smoke
+
+# Run live tests (requires Azure credentials)
+npm run test:live
+```
+
+Test artifacts are saved in the `docs/` directory for review.
 
 ## API Endpoints
 
@@ -107,7 +121,13 @@ See [docs/DB_SETUP.md](docs/DB_SETUP.md) for:
 
 ## Azure OpenAI Configuration
 
-The service requires Azure OpenAI Responses API configuration:
+The service supports both mock mode (for local development) and live Azure OpenAI integration:
+
+### Mock Mode (Default)
+When Azure credentials are not configured, the service automatically uses mock responses for development and testing.
+
+### Live Mode
+Configure these environment variables for Azure OpenAI Responses API:
 
 ```bash
 AZURE_OPENAI_URI=https://your-instance.cognitiveservices.azure.com/openai/responses?api-version=2025-04-01-preview
@@ -115,7 +135,10 @@ AZURE_OPENAI_KEY=your-api-key-here
 AZURE_OPENAI_DEPLOYMENT=gpt-5
 ```
 
-**Important**: The LLM receives candidate data for ranking. Ensure no sensitive PII or secrets are included in the nurse data fields sent to the API.
+**Security Notes**: 
+- API keys are masked in logs (only hostname shown)
+- Request/response bodies are truncated to 500 chars in logs
+- The LLM receives candidate data for ranking - ensure no sensitive PII or secrets are included
 
 ## Architecture
 
