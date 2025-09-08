@@ -2,3 +2,5 @@ node_modules/
 .env
 *:Zone.Identifier
 server.log
+nohup.out
+/tmp/*.log

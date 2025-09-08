@@ -4,7 +4,13 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "dev": "bash scripts/dev.sh",
+    "test:smoke": "bash scripts/smoke.sh",
+    "test:live": "bash scripts/live.sh"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "dotenv": "^17.2.2",

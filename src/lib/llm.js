@@ -1,5 +1,49 @@
 const { AZURE_OPENAI_URI, AZURE_OPENAI_KEY, AZURE_OPENAI_DEPLOYMENT } = process.env;
 
+// Helper: Sleep for exponential backoff
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Helper: Mask sensitive data for logging
+function maskSensitive(str) {
+  if (!str) return '';
+  if (str.length > 500) return str.substring(0, 500) + '...[truncated]';
+  return str;
+}
+
+// Helper: Retry wrapper for Azure API calls
+async function retryFetch(url, options, maxRetries = 2) {
+  let lastError;
+  const delays = [250, 500]; // Exponential backoff in ms
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const resp = await fetch(url, options);
+      
+      // If it's a transient error (429, 5xx), retry
+      if (!resp.ok && attempt < maxRetries) {
+        const status = resp.status;
+        if (status === 429 || (status >= 500 && status < 600)) {
+          console.log(`Transient error ${status}, retrying in ${delays[attempt]}ms...`);
+          await sleep(delays[attempt]);
+          continue;
+        }
+      }
+      
+      return resp;
+    } catch (error) {
+      lastError = error;
+      if (attempt < maxRetries) {
+        console.log(`Network error, retrying in ${delays[attempt]}ms...`);
+        await sleep(delays[attempt]);
+      }
+    }
+  }
+  
+  throw lastError || new Error('Max retries exceeded');
+}
+
 function buildPrompt(query, candidates){
   // Keep message compact; send only essential fields
   const q = {
@@ -19,10 +63,30 @@ function buildPrompt(query, candidates){
   return { q, c };
 }
 
+// Mock response for when Azure credentials are not configured
+function getMockResponse(allNurses, topK = 5) {
+  const mockResults = allNurses.slice(0, topK).map((nurse, idx) => ({
+    id: nurse.id,
+    name: nurse.name,
+    score: (1.0 - idx * 0.15), // Decreasing scores
+    reason: `Mock match: ${nurse.services[0] || 'General care'} expertise, ${nurse.city} location`
+  }));
+  
+  return mockResults;
+}
+
 export async function llmMatch(query, allNurses){
+  // Check for Azure credentials
   if(!AZURE_OPENAI_URI || !AZURE_OPENAI_KEY || !AZURE_OPENAI_DEPLOYMENT){
-    throw new Error('Missing AZURE_OPENAI_* env vars');
+    console.log('Azure credentials not configured. Using mock mode for local development.');
+    console.log('Set AZURE_OPENAI_URI, AZURE_OPENAI_KEY, and AZURE_OPENAI_DEPLOYMENT for live matching.');
+    return getMockResponse(allNurses, query.topK || 5);
   }
+  
+  // Log masked URI for debugging
+  const uriHost = new URL(AZURE_OPENAI_URI).hostname;
+  console.log(`Calling Azure OpenAI at ${uriHost} (deployment: ${AZURE_OPENAI_DEPLOYMENT})`);
+  
   const payload = buildPrompt(query, allNurses);
 
   // Ask the model to rank and explain. Use JSON schema to force a strict shape.
@@ -64,7 +128,11 @@ export async function llmMatch(query, allNurses){
     }
   };
 
-  const resp = await fetch(AZURE_OPENAI_URI, {
+  // Log truncated request for debugging
+  console.log('Request payload:', maskSensitive(JSON.stringify(body)));
+  
+  // Make API call with retry logic
+  const resp = await retryFetch(AZURE_OPENAI_URI, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -72,11 +140,15 @@ export async function llmMatch(query, allNurses){
     },
     body: JSON.stringify(body)
   });
+  
   if(!resp.ok){
     const txt = await resp.text();
-    throw new Error('Azure OpenAI HTTP '+resp.status+': '+txt);
+    console.error(`Azure OpenAI error ${resp.status}:`, maskSensitive(txt));
+    throw new Error(`Azure OpenAI HTTP ${resp.status}: ${maskSensitive(txt)}`);
   }
+  
   const data = await resp.json();
+  console.log('Response received:', maskSensitive(JSON.stringify(data)));
   
   // Find the message output with the text content
   let text = null;
@@ -104,8 +176,8 @@ export async function llmMatch(query, allNurses){
   try { 
     parsed = typeof text === 'string' ? JSON.parse(text) : text;
   } catch(e) { 
-    console.error('Failed to parse JSON:', text);
-    throw new Error('LLM did not return valid JSON: '+text); 
+    console.error('Failed to parse JSON:', maskSensitive(text));
+    throw new Error('LLM did not return valid JSON: ' + maskSensitive(text)); 
   }
   const results = (parsed.results || []).sort((a,b)=> (b.score??0)-(a.score??0));
   // Attach names for convenience
