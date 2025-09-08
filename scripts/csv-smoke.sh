@@ -3,7 +3,11 @@
 echo "=== LLM CSV Deep Smoke Tests ==="
 echo ""
 
-# Detect mode
+# Detect mode by sourcing .env if exists
+if [ -f .env ]; then
+    export $(cat .env | grep -v '^#' | xargs) 2>/dev/null
+fi
+
 if [ -n "$AZURE_OPENAI_URI" ] && [ -n "$AZURE_OPENAI_KEY" ] && [ -n "$AZURE_OPENAI_DEPLOYMENT" ]; then
     MODE="LIVE"
     echo "MODE: LIVE (Azure OpenAI)"
@@ -89,59 +93,59 @@ run_scenario() {
     echo ""
 }
 
-# Run 10 deep scenarios (A through J)
+# Run 10 deep scenarios (A through J) aligned with other engines
 echo "Running 10 deep scenarios..."
 echo "----------------------------"
 
-# A: Tel Aviv, Wound Care, Urgent
-run_scenario "A" "Tel Aviv" '["Wound Care"]' '["Geriatrics"]' \
+# A: Tel Aviv, Wound Care, 30km radius
+run_scenario "A" "Tel Aviv" '["Wound Care"]' '["Post-Surgery Care"]' \
     "2024-01-15T08:00:00Z" "2024-01-15T20:00:00Z" true 5 \
-    "Tel Aviv urgent wound care"
+    "Tel Aviv wound care 30km"
 
-# B: Jerusalem, Post-Surgery, Time window
-run_scenario "B" "Jerusalem" '["Post-Surgery Care"]' '["Rehabilitation"]' \
+# B: Jerusalem, Medication Administration, 40km
+run_scenario "B" "Jerusalem" '["Medication Administration"]' '["Pharmacy Services"]' \
     "2024-02-01T09:00:00Z" "2024-02-01T17:00:00Z" false 5 \
-    "Jerusalem post-surgery with time window"
+    "Jerusalem medication 40km"
 
-# C: Haifa, Geriatric Care
-run_scenario "C" "Haifa" '["Geriatric Care"]' '["Elder Care","Bedridden Patient Care"]' \
+# C: Haifa, Pediatrics, 50km
+run_scenario "C" "Haifa" '["Pediatric Care"]' '["Child Care"]' \
     "null" "null" false 10 \
-    "Haifa geriatric care, top 10"
+    "Haifa pediatrics 50km"
 
-# D: Beer Sheva, Pediatric, Urgent
-run_scenario "D" "Beer Sheva" '["Pediatric Care"]' '["Child Care"]' \
-    "2024-03-10T06:00:00Z" "2024-03-10T22:00:00Z" true 5 \
-    "Beer Sheva urgent pediatric"
+# D: Beer Sheva, Hospital Care, 60km
+run_scenario "D" "Beer Sheva" '["Hospital Care"]' '["Inpatient Services"]' \
+    "2024-03-10T06:00:00Z" "2024-03-10T22:00:00Z" false 5 \
+    "Beer Sheva hospital 60km"
 
-# E: Rishon LeTsiyon, Emergency
-run_scenario "E" "Rishon LeTsiyon" '["Emergency Care","Critical Care"]' '[]' \
-    "null" "null" true 3 \
-    "Rishon emergency care, top 3"
+# E: Rishon LeTsiyon, Home Care, 35km
+run_scenario "E" "Rishon LeTsiyon" '["Home Care"]' '["Mobile Patient Care"]' \
+    "null" "null" false 3 \
+    "Rishon home care 35km"
 
-# F: Netanya, Home Care
-run_scenario "F" "Netanya" '["Home Care"]' '["Mobile Patient Care"]' \
+# F: Netanya, Day Night nursing, 45km
+run_scenario "F" "Netanya" '["Day Night","Post-Surgery Care"]' '[]' \
     "2024-04-01T08:00:00Z" "2024-04-30T18:00:00Z" false 7 \
-    "Netanya home care, month window"
+    "Netanya day-night 45km"
 
-# G: Ashdod, IV Therapy
-run_scenario "G" "Ashdod" '["IV Therapy","Catheter Care"]' '[]' \
+# G: Ashdod, Geriatric Care, 55km
+run_scenario "G" "Ashdod" '["Geriatric Care"]' '["Elder Care"]' \
     "null" "null" false 5 \
-    "Ashdod IV therapy"
+    "Ashdod geriatric 55km"
 
-# H: Herzliya, Private Nursing
-run_scenario "H" "Herzliya" '["Private Nursing"]' '["Wheelchair Patient Care"]' \
-    "2024-05-15T10:00:00Z" "2024-05-15T14:00:00Z" false 5 \
-    "Herzliya private nursing, short window"
+# H: Herzliya, Emergency Care, 30km, urgent
+run_scenario "H" "Herzliya" '["Emergency Care"]' '["Critical Care"]' \
+    "2024-05-15T10:00:00Z" "2024-05-15T14:00:00Z" true 5 \
+    "Herzliya emergency 30km urgent"
 
-# I: Ramat Gan, General Care
-run_scenario "I" "Ramat Gan" '["General Care"]' '["Assisted Mobility Care"]' \
+# I: Ramat Gan, IV Therapy, 40km
+run_scenario "I" "Ramat Gan" '["IV Therapy","Catheter Care"]' '[]' \
     "null" "null" false 10 \
-    "Ramat Gan general care"
+    "Ramat Gan IV therapy 40km"
 
-# J: Bat Yam, Specialized Procedures
-run_scenario "J" "Bat Yam" '["Specialized Procedures","Clinical Care"]' '[]' \
-    "2024-06-01T07:00:00Z" "2024-06-01T19:00:00Z" true 5 \
-    "Bat Yam specialized procedures, urgent"
+# J: Bat Yam, General Care, 50km
+run_scenario "J" "Bat Yam" '["General Care"]' '["Home Care"]' \
+    "2024-06-01T07:00:00Z" "2024-06-01T19:00:00Z" false 5 \
+    "Bat Yam general care 50km"
 
 echo "=== CSV Smoke Tests Complete ==="
 echo ""

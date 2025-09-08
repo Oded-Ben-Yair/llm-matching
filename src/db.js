@@ -120,18 +120,31 @@ export async function dbHealth() {
   return health;
 }
 
+// Helper to create deterministic hash-based value 0-1 from string
+function hashToUnit(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash % 1000) / 1000; // Return value 0-1
+}
+
 // Helper to normalize services/expertise from CSV treatment types
 function normalizeServices(treatmentType) {
   const serviceMap = {
     'CENTRAL_CATHETER_TREATMENT': ['Catheter Care', 'IV Therapy'],
-    'DAY_NIGHT_CIRCUMCISION_NURSE': ['Post-Surgery Care', 'Pediatric Care'],
+    'DAY_NIGHT_CIRCUMCISION_NURSE': ['Post-Surgery Care', 'Pediatric Care', 'Day Night'],
     'DEFAULT': ['General Care', 'Home Care'],
     'ENEMA_UNDER_INSTRUCTION': ['Specialized Procedures', 'Clinical Care'],
     'PRIVATE_SECURITY_HOME': ['Home Care', 'Private Nursing'],
     'WOUND_CARE': ['Wound Care', 'Post-Surgery Care'],
     'GERIATRIC': ['Geriatric Care', 'Elder Care'],
     'PEDIATRIC': ['Pediatric Care', 'Child Care'],
-    'EMERGENCY': ['Emergency Care', 'Critical Care']
+    'EMERGENCY': ['Emergency Care', 'Critical Care'],
+    'MEDICATION': ['Medication Administration', 'Pharmacy Services'],
+    'HOSPITAL': ['Hospital Care', 'Inpatient Services']
   };
   return serviceMap[treatmentType] || ['General Care'];
 }
@@ -178,7 +191,7 @@ async function loadFromCSV() {
         const coords = centroids[city] || { lat: 32.0853, lng: 34.7818 }; // Default to Tel Aviv
         
         nursesMap.set(nurseId, {
-          id: `n${counter++}`,
+          id: nurseId, // Use actual nurse_id
           name: `Nurse ${counter}`, // Anonymous name
           city: city,
           lat: coords.lat,
@@ -187,14 +200,15 @@ async function loadFromCSV() {
           mobility: record.mobility,
           services: new Set(),
           expertiseTags: new Set(),
-          rating: 4.0 + Math.random() * 0.9, // Random 4.0-4.9
-          reviewsCount: Math.floor(50 + Math.random() * 150),
+          rating: 4.2 + hashToUnit(nurseId) * 0.7, // Deterministic 4.2-4.9
+          reviewsCount: Math.floor(50 + hashToUnit(nurseId + 'reviews') * 150), // Deterministic 50-200
           availability: {
-            from: '2024-01-01T08:00:00Z',
-            to: '2024-12-31T18:00:00Z'
+            from: record.from_datetime_utc || '2024-01-01T08:00:00Z',
+            to: record.to_datetime_utc || '2024-12-31T18:00:00Z'
           },
           status: record.status
         });
+        counter++;
       }
       
       const nurse = nursesMap.get(nurseId);

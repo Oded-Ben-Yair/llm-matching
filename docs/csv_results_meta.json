@@ -1,75 +1,75 @@
 {
   "mode": "MOCK",
-  "timestamp": "2025-09-08T10:20:30+00:00",
+  "timestamp": "2025-09-08T11:55:44+00:00",
   "scenarios": [
     {
       "case": "A",
       "city": "Tel Aviv",
-      "description": "Tel Aviv urgent wound care",
-      "latency_ms": 65,
+      "description": "Tel Aviv wound care 30km",
+      "latency_ms": 87,
       "count": 5
     },
     {
       "case": "B",
       "city": "Jerusalem",
-      "description": "Jerusalem post-surgery with time window",
-      "latency_ms": 47,
+      "description": "Jerusalem medication 40km",
+      "latency_ms": 70,
       "count": 5
     },
     {
       "case": "C",
       "city": "Haifa",
-      "description": "Haifa geriatric care, top 10",
-      "latency_ms": 52,
+      "description": "Haifa pediatrics 50km",
+      "latency_ms": 77,
       "count": 10
     },
     {
       "case": "D",
       "city": "Beer Sheva",
-      "description": "Beer Sheva urgent pediatric",
-      "latency_ms": 54,
+      "description": "Beer Sheva hospital 60km",
+      "latency_ms": 52,
       "count": 5
     },
     {
       "case": "E",
       "city": "Rishon LeTsiyon",
-      "description": "Rishon emergency care, top 3",
-      "latency_ms": 43,
+      "description": "Rishon home care 35km",
+      "latency_ms": 49,
       "count": 3
     },
     {
       "case": "F",
       "city": "Netanya",
-      "description": "Netanya home care, month window",
-      "latency_ms": 44,
+      "description": "Netanya day-night 45km",
+      "latency_ms": 51,
       "count": 7
     },
     {
       "case": "G",
       "city": "Ashdod",
-      "description": "Ashdod IV therapy",
-      "latency_ms": 55,
+      "description": "Ashdod geriatric 55km",
+      "latency_ms": 61,
       "count": 5
     },
     {
       "case": "H",
       "city": "Herzliya",
-      "description": "Herzliya private nursing, short window",
-      "latency_ms": 41,
+      "description": "Herzliya emergency 30km urgent",
+      "latency_ms": 47,
       "count": 5
     },
     {
       "case": "I",
       "city": "Ramat Gan",
-      "description": "Ramat Gan general care",
-      "latency_ms": 41,
+      "description": "Ramat Gan IV therapy 40km",
+      "latency_ms": 47,
       "count": 10
     },
     {
       "case": "J",
       "city": "Bat Yam",
-      "description": "Bat Yam specialized procedures, urgent",
-      "latency_ms": 40,
+      "description": "Bat Yam general care 50km",
+      "latency_ms": 50,
       "count": 5
     }
   ]
