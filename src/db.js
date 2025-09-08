@@ -3,6 +3,7 @@ import { MongoClient } from 'mongodb';
 import { promises as fs } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { parse } from 'csv-parse/sync';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -119,12 +120,127 @@ export async function dbHealth() {
   return health;
 }
 
+// Helper to normalize services/expertise from CSV treatment types
+function normalizeServices(treatmentType) {
+  const serviceMap = {
+    'CENTRAL_CATHETER_TREATMENT': ['Catheter Care', 'IV Therapy'],
+    'DAY_NIGHT_CIRCUMCISION_NURSE': ['Post-Surgery Care', 'Pediatric Care'],
+    'DEFAULT': ['General Care', 'Home Care'],
+    'ENEMA_UNDER_INSTRUCTION': ['Specialized Procedures', 'Clinical Care'],
+    'PRIVATE_SECURITY_HOME': ['Home Care', 'Private Nursing'],
+    'WOUND_CARE': ['Wound Care', 'Post-Surgery Care'],
+    'GERIATRIC': ['Geriatric Care', 'Elder Care'],
+    'PEDIATRIC': ['Pediatric Care', 'Child Care'],
+    'EMERGENCY': ['Emergency Care', 'Critical Care']
+  };
+  return serviceMap[treatmentType] || ['General Care'];
+}
+
+function normalizeMobility(mobility) {
+  const mobilityMap = {
+    'INDEPENDENT': ['Mobile Patient Care'],
+    'WALKER': ['Assisted Mobility Care'],
+    'WHEELCHAIR': ['Wheelchair Patient Care'],
+    'BEDRIDDEN': ['Bedridden Patient Care']
+  };
+  return mobilityMap[mobility] || [];
+}
+
+// Try to load from CSV first, then fallback to JSON
+async function loadFromCSV() {
+  const csvPath = join(__dirname, '..', 'sample_data', 'nurses.csv');
+  
+  try {
+    await fs.access(csvPath);
+    console.log('Loading nurses from CSV file');
+    
+    const csvContent = await fs.readFile(csvPath, 'utf8');
+    const records = parse(csvContent, {
+      columns: true,
+      skip_empty_lines: true,
+      bom: true
+    });
+    
+    // Load city centroids
+    const centroidsPath = join(__dirname, '..', 'sample_data', 'city_centroids_il.json');
+    const centroidsData = await fs.readFile(centroidsPath, 'utf8');
+    const centroids = JSON.parse(centroidsData);
+    
+    // Group by nurse_id and aggregate data
+    const nursesMap = new Map();
+    let counter = 1;
+    
+    for (const record of records) {
+      const nurseId = record.nurse_id;
+      const city = record.municipality || 'Unknown';
+      
+      if (!nursesMap.has(nurseId)) {
+        const coords = centroids[city] || { lat: 32.0853, lng: 34.7818 }; // Default to Tel Aviv
+        
+        nursesMap.set(nurseId, {
+          id: `n${counter++}`,
+          name: `Nurse ${counter}`, // Anonymous name
+          city: city,
+          lat: coords.lat,
+          lng: coords.lng,
+          gender: record.gender,
+          mobility: record.mobility,
+          services: new Set(),
+          expertiseTags: new Set(),
+          rating: 4.0 + Math.random() * 0.9, // Random 4.0-4.9
+          reviewsCount: Math.floor(50 + Math.random() * 150),
+          availability: {
+            from: '2024-01-01T08:00:00Z',
+            to: '2024-12-31T18:00:00Z'
+          },
+          status: record.status
+        });
+      }
+      
+      const nurse = nursesMap.get(nurseId);
+      
+      // Add services from treatment type
+      const services = normalizeServices(record.treatment_type || record.name);
+      services.forEach(s => nurse.services.add(s));
+      
+      // Add expertise from mobility
+      const expertise = normalizeMobility(record.mobility);
+      expertise.forEach(e => nurse.expertiseTags.add(e));
+    }
+    
+    // Convert to array and clean up Sets
+    const nurses = Array.from(nursesMap.values()).map(n => ({
+      ...n,
+      services: Array.from(n.services),
+      expertiseTags: Array.from(n.expertiseTags)
+    }));
+    
+    console.log(`Loaded ${nurses.length} nurses from CSV`);
+    return nurses;
+    
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      console.log('CSV file not found, falling back to JSON');
+    } else {
+      console.error('Error loading CSV:', error.message);
+    }
+    return null;
+  }
+}
+
 export async function loadNurses() {
   const useDb = process.env.USE_DB === 'true';
   const dbKind = process.env.DB_KIND || 'postgres';
   
-  // If DB is disabled or not connected, load from JSON
+  // If DB is disabled or not connected, try CSV first then JSON
   if (!useDb || (dbKind === 'postgres' && !pgPool) || (dbKind === 'mongodb' && !mongoDb)) {
+    // Try CSV first
+    const csvNurses = await loadFromCSV();
+    if (csvNurses) {
+      return csvNurses;
+    }
+    
+    // Fallback to JSON
     console.log('Loading nurses from JSON file');
     const jsonPath = join(__dirname, '..', 'sample_data', 'nurses.json');
     const data = await fs.readFile(jsonPath, 'utf8');

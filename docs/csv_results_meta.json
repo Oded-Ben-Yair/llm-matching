@@ -1,0 +1,76 @@
+{
+  "mode": "MOCK",
+  "timestamp": "2025-09-08T10:20:30+00:00",
+  "scenarios": [
+    {
+      "case": "A",
+      "city": "Tel Aviv",
+      "description": "Tel Aviv urgent wound care",
+      "latency_ms": 65,
+      "count": 5
+    },
+    {
+      "case": "B",
+      "city": "Jerusalem",
+      "description": "Jerusalem post-surgery with time window",
+      "latency_ms": 47,
+      "count": 5
+    },
+    {
+      "case": "C",
+      "city": "Haifa",
+      "description": "Haifa geriatric care, top 10",
+      "latency_ms": 52,
+      "count": 10
+    },
+    {
+      "case": "D",
+      "city": "Beer Sheva",
+      "description": "Beer Sheva urgent pediatric",
+      "latency_ms": 54,
+      "count": 5
+    },
+    {
+      "case": "E",
+      "city": "Rishon LeTsiyon",
+      "description": "Rishon emergency care, top 3",
+      "latency_ms": 43,
+      "count": 3
+    },
+    {
+      "case": "F",
+      "city": "Netanya",
+      "description": "Netanya home care, month window",
+      "latency_ms": 44,
+      "count": 7
+    },
+    {
+      "case": "G",
+      "city": "Ashdod",
+      "description": "Ashdod IV therapy",
+      "latency_ms": 55,
+      "count": 5
+    },
+    {
+      "case": "H",
+      "city": "Herzliya",
+      "description": "Herzliya private nursing, short window",
+      "latency_ms": 41,
+      "count": 5
+    },
+    {
+      "case": "I",
+      "city": "Ramat Gan",
+      "description": "Ramat Gan general care",
+      "latency_ms": 41,
+      "count": 10
+    },
+    {
+      "case": "J",
+      "city": "Bat Yam",
+      "description": "Bat Yam specialized procedures, urgent",
+      "latency_ms": 40,
+      "count": 5
+    }
+  ]
+}
